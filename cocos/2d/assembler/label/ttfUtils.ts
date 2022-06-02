@@ -38,7 +38,7 @@ import { BlendFactor } from '../../../core/gfx';
 import { WrapMode } from '../../../core/assets/asset-enum';
 
 const Overflow = Label.Overflow;
-const MAX_SIZE = 2048;
+const MAX_SIZE = 2048 * 2 * 2;
 const _BASELINE_OFFSET = getBaselineOffset();
 const _invisibleAlpha = (1 / 255).toFixed(3);
 
