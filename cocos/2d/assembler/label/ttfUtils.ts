@@ -30,6 +30,7 @@ import { Color, Size, Vec2, Rect } from '../../../core/math';
 import { HorizontalTextAlignment, Label, LabelOutline, VerticalTextAlignment, LabelShadow } from '../../components';
 import { ISharedLabelData, LetterRenderTexture } from './font-utils';
 import { logID } from '../../../core/platform/debug';
+import { view } from '../../../core/platform/view';
 import { UITransform } from '../../framework/ui-transform';
 import { legacyCC } from '../../../core/global-exports';
 import { assetManager } from '../../../core/asset-manager';
@@ -38,7 +39,6 @@ import { BlendFactor } from '../../../core/gfx';
 import { WrapMode } from '../../../core/assets/asset-enum';
 
 const Overflow = Label.Overflow;
-const MAX_SIZE = 2048 * 2 * 2;
 const _BASELINE_OFFSET = getBaselineOffset();
 const _invisibleAlpha = (1 / 255).toFixed(3);
 
@@ -286,6 +286,9 @@ export const ttfUtils =  {
             _context.fillRect(0, 0, _canvas.width, _canvas.height);
         }
         _context.fillStyle = `rgb(${_color.r}, ${_color.g}, ${_color.b})`;
+
+        _context.save();
+        _context.scale(view.renderScale, view.renderScale);
         const drawTextPosX = _startPosition.x;
         let drawTextPosY = 0;
         // draw shadow and underline
@@ -298,6 +301,7 @@ export const ttfUtils =  {
             }
             _context.fillText(_splitStrings[i], drawTextPosX, drawTextPosY);
         }
+        _context.restore();
 
         if (_shadowComp) {
             _context.shadowColor = 'transparent';
@@ -415,17 +419,17 @@ export const ttfUtils =  {
     },
 
     _updateLabelDimensions () {
-        _canvasSize.width = Math.min(_canvasSize.width, MAX_SIZE);
-        _canvasSize.height = Math.min(_canvasSize.height, MAX_SIZE);
+        const realWidth = Math.ceil(_canvasSize.width * view.renderScale);
+        const realHeight = Math.ceil(_canvasSize.height * view.renderScale);
 
         let recreate = false;
-        if (_canvas!.width !== _canvasSize.width) {
-            _canvas!.width = _canvasSize.width;
+        if (_canvas!.width !== realWidth) {
+            _canvas!.width = realWidth;
             recreate = true;
         }
 
-        if (_canvas!.height !== _canvasSize.height) {
-            _canvas!.height = _canvasSize.height;
+        if (_canvas!.height !== realHeight) {
+            _canvas!.height = realHeight;
             recreate = true;
         }
 

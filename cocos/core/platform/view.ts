@@ -70,6 +70,7 @@ export class View extends EventTarget {
      */
     public _designResolutionSize: Size;
 
+    private _renderScale: number;
     private _scaleX: number;
     private _scaleY: number;
     private _viewportRect: Rect;
@@ -92,6 +93,7 @@ export class View extends EventTarget {
 
         // resolution size, it is the size appropriate for the app resources.
         this._designResolutionSize = new Size(0, 0);
+        this._renderScale = 1;
         this._scaleX = 1;
         this._scaleY = 1;
         // Viewport is the container's rect related to content's coordinates in pixel
@@ -521,6 +523,15 @@ export class View extends EventTarget {
      */
     public getViewportRect (): Rect {
         return this._viewportRect;
+    }
+
+    public setRenderScale (scale: number): void {
+        this._renderScale = scale;
+        this.emit('render-scale');
+    }
+
+    public get renderScale(): number {
+        return this._renderScale;
     }
 
     /**

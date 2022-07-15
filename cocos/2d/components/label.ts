@@ -38,6 +38,7 @@ import { TextureBase } from '../../core/assets/texture-base';
 import { PixelFormat } from '../../core/assets/asset-enum';
 import { legacyCC } from '../../core/global-exports';
 import { BlendFactor } from '../../core/gfx';
+import { view } from '../../core/platform/view';
 
 /**
  * @en Enum for horizontal text alignment.
@@ -700,6 +701,13 @@ export class Label extends Renderable2D {
         }
 
         this._applyFontTexture();
+
+        view.on('render-scale', this._applyFontTexture, this);
+    }
+
+    public onDisable () {
+        view.off('render-scale', this._applyFontTexture, this);
+        super.onDisable();
     }
 
     public onDestroy () {
