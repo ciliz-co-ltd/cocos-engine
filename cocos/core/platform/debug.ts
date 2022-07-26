@@ -257,7 +257,7 @@ export function _throw (error_: any) {
     } else {
         const stack = error_.stack;
         if (stack) {
-            error(JSB ? (`${error_}\n${stack}`) : stack);
+            error(`${error_}\n${stack}`);
         } else {
             error(error_);
         }
