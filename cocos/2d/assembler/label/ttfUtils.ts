@@ -419,6 +419,10 @@ export const ttfUtils =  {
     },
 
     _updateLabelDimensions () {
+        if (!_context || !_canvas) {
+            return;
+        }
+
         const realWidth = Math.ceil(_canvasSize.width * view.renderScale);
         const realHeight = Math.ceil(_canvasSize.height * view.renderScale);
 

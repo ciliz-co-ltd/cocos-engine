@@ -255,13 +255,17 @@ export function _throw (error_: any) {
     if (EDITOR) {
         return error(error_);
     } else {
-        const stack = error_.stack;
-        if (stack) {
-            error(`${error_}\n${stack}`);
-        } else {
-            error(error_);
+        if (JSB) {
+            const stack = error_.stack;
+            if (stack) {
+                error(`${error_}\n${stack}`);
+            } else {
+                error(error_);
+            }
+            return undefined;
         }
-        return undefined;
+
+        throw error_;
     }
 }
 
