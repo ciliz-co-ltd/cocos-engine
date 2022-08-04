@@ -351,7 +351,7 @@ class CCObject implements EditorExtendableObject {
      */
     public _destruct () {
         const ctor: any = this.constructor;
-        let destruct = ctor.__destruct__;
+        let destruct = ctor.hasOwnProperty('__destruct__') && ctor.__destruct__;
         if (!destruct) {
             destruct = compileDestruct(this, ctor);
             js.value(ctor, '__destruct__', destruct, true);
