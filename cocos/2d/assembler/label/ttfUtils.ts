@@ -205,14 +205,14 @@ export const ttfUtils =  {
         let outlineWidth = 0;
         _contentSizeExtend.width = _contentSizeExtend.height = 0;
         if (_outlineComp) {
-            outlineWidth = _outlineComp.width;
+            outlineWidth = _outlineComp.width * view.renderScale;
             top = bottom = left = right = outlineWidth;
             _contentSizeExtend.width = _contentSizeExtend.height = outlineWidth * 2;
         }
         if (_shadowComp) {
-            const shadowWidth = _shadowComp.blur + outlineWidth;
-            const offsetX = _shadowComp.offset.x;
-            const offsetY = _shadowComp.offset.y;
+            const shadowWidth = _shadowComp.blur * view.renderScale + outlineWidth;
+            const offsetX = _shadowComp.offset.x * view.renderScale;
+            const offsetY = _shadowComp.offset.y * view.renderScale;
             left = Math.max(left, -offsetX + shadowWidth);
             right = Math.max(right, offsetX + shadowWidth);
             top = Math.max(top, offsetY + shadowWidth);
@@ -359,14 +359,14 @@ export const ttfUtils =  {
 
     _setupOutline () {
         _context!.strokeStyle = `rgba(${_outlineColor.r}, ${_outlineColor.g}, ${_outlineColor.b}, ${_outlineColor.a / 255})`;
-        _context!.lineWidth = _outlineComp!.width * 2;
+        _context!.lineWidth = _outlineComp!.width * 2 * view.renderScale;
     },
 
     _setupShadow () {
         _context!.shadowColor = `rgba(${_shadowColor.r}, ${_shadowColor.g}, ${_shadowColor.b}, ${_shadowColor.a / 255})`;
-        _context!.shadowBlur = _shadowComp!.blur;
-        _context!.shadowOffsetX = _shadowComp!.offset.x;
-        _context!.shadowOffsetY = -_shadowComp!.offset.y;
+        _context!.shadowBlur = _shadowComp!.blur * view.renderScale;
+        _context!.shadowOffsetX = _shadowComp!.offset.x * view.renderScale;
+        _context!.shadowOffsetY = -_shadowComp!.offset.y * view.renderScale;
     },
 
     _drawTextEffect (startPosition: Vec2, lineHeight: number) {
