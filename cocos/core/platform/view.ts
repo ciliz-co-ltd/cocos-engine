@@ -526,6 +526,9 @@ export class View extends EventTarget {
     }
 
     public setRenderScale (scale: number): void {
+        if (this._renderScale === scale)
+            return;
+
         this._renderScale = scale;
         this.emit('render-scale');
     }
