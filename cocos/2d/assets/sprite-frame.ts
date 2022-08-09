@@ -803,11 +803,13 @@ export class SpriteFrame extends Asset {
         const tex = this.texture;
         const atlasWidth = tex.width;
         const atlasHeight = tex.height;
-        const leftWidth = this._capInsets[INSET_LEFT];
-        const rightWidth = this._capInsets[INSET_RIGHT];
+        const xScale = atlasWidth / this._originalSize.width;
+        const yScale = atlasHeight / this._originalSize.height;
+        const leftWidth = this._capInsets[INSET_LEFT] * xScale;
+        const rightWidth = this._capInsets[INSET_RIGHT] * xScale;
         const centerWidth = rect.width - leftWidth - rightWidth;
-        const topHeight = this._capInsets[INSET_TOP];
-        const bottomHeight = this._capInsets[INSET_BOTTOM];
+        const topHeight = this._capInsets[INSET_TOP] * yScale;
+        const bottomHeight = this._capInsets[INSET_BOTTOM] * yScale;
         const centerHeight = rect.height - topHeight - bottomHeight;
 
         const uvSliced = this.uvSliced;
