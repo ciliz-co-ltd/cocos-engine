@@ -135,6 +135,7 @@ export interface IWebGL2GPUTexture {
     samples: SampleCount;
     flags: TextureFlags;
     isPowerOf2: boolean;
+    premultiplyOnUpload: boolean;
 
     glTarget: GLenum;
     glInternalFmt: GLenum;

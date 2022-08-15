@@ -1124,6 +1124,7 @@ export class TextureInfo {
         public samples: SampleCount = SampleCount.ONE,
         public depth: number = 1,
         public externalRes: number = 0,
+        public premultiplyOnUpload: boolean = true
     ) {}
 
     public copy (info: Readonly<TextureInfo>) {
@@ -1138,6 +1139,7 @@ export class TextureInfo {
         this.samples = info.samples;
         this.depth = info.depth;
         this.externalRes = info.externalRes;
+        this.premultiplyOnUpload = info.premultiplyOnUpload;
         return this;
     }
 }

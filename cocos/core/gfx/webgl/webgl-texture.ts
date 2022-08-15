@@ -70,6 +70,7 @@ export class WebGLTexture extends Texture {
                 samples: texInfo.samples,
                 flags: texInfo.flags,
                 isPowerOf2: this._isPowerOf2,
+                premultiplyOnUpload: texInfo.premultiplyOnUpload,
 
                 glTarget: 0,
                 glInternalFmt: 0,

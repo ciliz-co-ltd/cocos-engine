@@ -28,6 +28,7 @@ import { BlendState, DepthStencilState, RasterizerState } from '../base/pipeline
 
 export interface IWebGLTexUnit {
     glTexture: WebGLTexture | null;
+    premultiplyOnUpload: boolean;
 }
 
 export class WebGLStateCache {
@@ -49,7 +50,12 @@ export class WebGLStateCache {
     public texUnitCacheMap: Record<string, number> = {};
 
     initialize (texUnit: number, vertexAttributes: number) {
-        for (let i = 0; i < texUnit; ++i) this.glTexUnits.push({ glTexture: null });
+        for (let i = 0; i < texUnit; ++i) {
+            this.glTexUnits.push({
+                glTexture: null,
+                premultiplyOnUpload: false
+            });
+        }
 
         this.glEnabledAttribLocs.length = vertexAttributes;
         this.glEnabledAttribLocs.fill(false);

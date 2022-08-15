@@ -1053,6 +1053,11 @@ export function WebGL2CmdFuncCreateTexture (device: WebGL2Device, gpuTexture: IW
                     glTexUnit.glTexture = gpuTexture.glTexture;
                 }
 
+                if (glTexUnit.premultiplyOnUpload !== gpuTexture.premultiplyOnUpload) {
+                    gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, gpuTexture.premultiplyOnUpload);
+                    glTexUnit.premultiplyOnUpload = gpuTexture.premultiplyOnUpload;
+                }
+
                 if (FormatInfos[gpuTexture.format].isCompressed) {
                     for (let i = 0; i < gpuTexture.mipLevel; ++i) {
                         const imgSize = FormatSize(gpuTexture.format, w, h, 1);
@@ -1094,6 +1099,11 @@ export function WebGL2CmdFuncCreateTexture (device: WebGL2Device, gpuTexture: IW
             if (glTexUnit.glTexture !== gpuTexture.glTexture) {
                 gl.bindTexture(gl.TEXTURE_CUBE_MAP, gpuTexture.glTexture);
                 glTexUnit.glTexture = gpuTexture.glTexture;
+            }
+
+            if (glTexUnit.premultiplyOnUpload !== gpuTexture.premultiplyOnUpload) {
+                gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, gpuTexture.premultiplyOnUpload);
+                glTexUnit.premultiplyOnUpload = gpuTexture.premultiplyOnUpload;
             }
 
             if (FormatInfos[gpuTexture.format].isCompressed) {

@@ -216,6 +216,8 @@ export class Renderable2D extends RenderableComponent {
     protected _dstBlendFactor = BlendFactor.ONE_MINUS_SRC_ALPHA;
     @serializable
     protected _color: Color = Color.WHITE.clone();
+    @serializable
+    protected _forcePremultiplyOnUpload = true;
 
     protected _assembler: IAssembler | null = null;
     protected _postAssembler: IAssembler | null = null;
@@ -425,7 +427,16 @@ export class Renderable2D extends RenderableComponent {
             target = new BlendTarget();
             this._blendState.setTarget(0, target);
         }
-        if (target.blendDst !== this._dstBlendFactor || target.blendSrc !== this._srcBlendFactor) {
+        if (this._forcePremultiplyOnUpload) {
+            target.blend = true;
+            target.blendDstAlpha = BlendFactor.ONE_MINUS_SRC_ALPHA;
+            target.blendDst = this._dstBlendFactor;
+            target.blendSrcAlpha = BlendFactor.ONE;
+            target.blendSrc = BlendFactor.ONE;
+            if (this.renderData) {
+                this.renderData.passDirty = true;
+            }
+        } else if (target.blendDst !== this._dstBlendFactor || target.blendSrc !== this._srcBlendFactor) {
             target.blend = true;
             target.blendDstAlpha = BlendFactor.ONE_MINUS_SRC_ALPHA;
             target.blendDst = this._dstBlendFactor;

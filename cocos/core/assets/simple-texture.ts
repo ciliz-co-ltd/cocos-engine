@@ -37,7 +37,7 @@ import { fastRemoveAt } from '../utils/array';
 
 const _regions: BufferTextureCopy[] = [new BufferTextureCopy()];
 
-export type PresumedGFXTextureInfo = Pick<TextureInfo, 'usage' | 'flags' | 'format' | 'levelCount'>;
+export type PresumedGFXTextureInfo = Pick<TextureInfo, 'usage' | 'flags' | 'format' | 'levelCount' | 'premultiplyOnUpload'>;
 export type PresumedGFXTextureViewInfo = Pick<TextureViewInfo, 'texture' | 'format' | 'baseLevel' | 'levelCount'>;
 
 function getMipLevel (width: number, height: number) {
@@ -66,12 +66,21 @@ export class SimpleTexture extends TextureBase {
     protected _gfxTexture: Texture | null = null;
     protected _gfxTextureView: Texture | null = null;
     private _mipmapLevel = 1;
+    private _premultiplyOnUpload = true;
     // Cache these data to reduce JSB invoking.
     private _textureWidth = 0;
     private _textureHeight = 0;
 
     protected _baseLevel = 0;
     protected _maxLevel = 1000;
+
+    get premultiplyOnUpload () {
+        return this._premultiplyOnUpload;
+    }
+
+    set premultiplyOnUpload (value) {
+        this._premultiplyOnUpload = value;
+    }
 
     /**
      * @en The mipmap level of the texture
@@ -274,6 +283,7 @@ export class SimpleTexture extends TextureBase {
             format: this._getGFXFormat(),
             levelCount: this._mipmapLevel,
             flags,
+            premultiplyOnUpload: this._premultiplyOnUpload
         });
         if (!textureCreateInfo) {
             return;
