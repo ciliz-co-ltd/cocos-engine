@@ -23,6 +23,7 @@
  THE SOFTWARE.
 */
 
+import { EDITOR, TEST } from 'internal:constants';
 import { SpriteFrame } from '../../assets';
 import { Texture2D } from '../../../core/assets';
 import { fragmentText, safeMeasureText, getBaselineOffset, BASELINE_RATIO } from '../../utils/text-utils';
@@ -87,6 +88,13 @@ const Alignment = [
     'center', // macro.TextAlignment.CENTER
     'right', // macro.TextAlignment.RIGHT
 ];
+
+function renderScale(): number {
+    if (EDITOR)
+        return 10;
+
+    return view.renderScale;
+}
 
 export const ttfUtils =  {
     getAssemblerData () {
@@ -205,14 +213,14 @@ export const ttfUtils =  {
         let outlineWidth = 0;
         _contentSizeExtend.width = _contentSizeExtend.height = 0;
         if (_outlineComp) {
-            outlineWidth = _outlineComp.width * view.renderScale;
+            outlineWidth = _outlineComp.width * renderScale();
             top = bottom = left = right = outlineWidth;
             _contentSizeExtend.width = _contentSizeExtend.height = outlineWidth * 2;
         }
         if (_shadowComp) {
-            const shadowWidth = _shadowComp.blur * view.renderScale + outlineWidth;
-            const offsetX = _shadowComp.offset.x * view.renderScale;
-            const offsetY = _shadowComp.offset.y * view.renderScale;
+            const shadowWidth = _shadowComp.blur * renderScale() + outlineWidth;
+            const offsetX = _shadowComp.offset.x * renderScale();
+            const offsetY = _shadowComp.offset.y * renderScale();
             left = Math.max(left, -offsetX + shadowWidth);
             right = Math.max(right, offsetX + shadowWidth);
             top = Math.max(top, offsetY + shadowWidth);
@@ -288,7 +296,7 @@ export const ttfUtils =  {
         _context.fillStyle = `rgb(${_color.r}, ${_color.g}, ${_color.b})`;
 
         _context.save();
-        _context.scale(view.renderScale, view.renderScale);
+        _context.scale(renderScale(), renderScale());
         const drawTextPosX = _startPosition.x;
         let drawTextPosY = 0;
         // draw shadow and underline
@@ -359,14 +367,14 @@ export const ttfUtils =  {
 
     _setupOutline () {
         _context!.strokeStyle = `rgba(${_outlineColor.r}, ${_outlineColor.g}, ${_outlineColor.b}, ${_outlineColor.a / 255})`;
-        _context!.lineWidth = _outlineComp!.width * 2 * view.renderScale;
+        _context!.lineWidth = _outlineComp!.width * 2 * renderScale();
     },
 
     _setupShadow () {
         _context!.shadowColor = `rgba(${_shadowColor.r}, ${_shadowColor.g}, ${_shadowColor.b}, ${_shadowColor.a / 255})`;
-        _context!.shadowBlur = _shadowComp!.blur * view.renderScale;
-        _context!.shadowOffsetX = _shadowComp!.offset.x * view.renderScale;
-        _context!.shadowOffsetY = -_shadowComp!.offset.y * view.renderScale;
+        _context!.shadowBlur = _shadowComp!.blur * renderScale();
+        _context!.shadowOffsetX = _shadowComp!.offset.x * renderScale();
+        _context!.shadowOffsetY = -_shadowComp!.offset.y * renderScale();
     },
 
     _drawTextEffect (startPosition: Vec2, lineHeight: number) {
@@ -423,8 +431,8 @@ export const ttfUtils =  {
             return;
         }
 
-        const realWidth = Math.ceil(_canvasSize.width * view.renderScale);
-        const realHeight = Math.ceil(_canvasSize.height * view.renderScale);
+        const realWidth = Math.ceil(_canvasSize.width * renderScale());
+        const realHeight = Math.ceil(_canvasSize.height * renderScale());
 
         let recreate = false;
         if (_canvas!.width !== realWidth) {
