@@ -182,13 +182,13 @@ export const simple: IAssembler = {
         let b = 0;
         let r = 0;
         let t = 0;
+        const frame = sprite.spriteFrame!;
         if (sprite.trim) {
             l = -appX;
             b = -appY;
             r = cw - appX;
             t = ch - appY;
         } else {
-            const frame = sprite.spriteFrame!;
             const originSize = frame.getOriginalSize();
             const rect = frame.getRect();
             const ow = originSize.width;
@@ -207,10 +207,15 @@ export const simple: IAssembler = {
             r = cw + trimRight * scaleX - appX;
             t = ch + trimTop * scaleY - appY;
         }
+        
+        l -= frame.marginLeft;
+        b -= frame.marginBottom;
+        r += frame.marginRight;
+        t += frame.marginTop;
 
         dataList[0].x = l;
         dataList[0].y = b;
-
+        
         dataList[1].x = r;
         dataList[1].y = t;
 

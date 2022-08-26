@@ -42,6 +42,11 @@ const INSET_TOP = 1;
 const INSET_RIGHT = 2;
 const INSET_BOTTOM = 3;
 
+const MARGIN_LEFT = 0;
+const MARGIN_TOP = 1;
+const MARGIN_RIGHT = 2;
+const MARGIN_BOTTOM = 3;
+
 export interface IUV {
     u: number;
     v: number;
@@ -66,6 +71,7 @@ interface ISpriteFramesSerializeData {
     offset: Vec2;
     originalSize: Size;
     rotated: boolean;
+    margins: number[];
     capInsets: number[];
     vertices: IVertices;
     texture: string;
@@ -106,6 +112,12 @@ interface ISpriteFrameInitInfo {
      * 在图集中的精灵帧可能会被剔除透明像素以获得更高的空间利用李，剔除后的矩形尺寸比剪裁前更小，偏移量指的是从原始矩形的中心到剪裁后的矩形中心的距离。
      */
     offset?: Vec2;
+
+    marginTop?: number;
+    marginBottom?: number;
+    marginLeft?: number;
+    marginRight?: number;
+
     /**
      * @en Top side border for sliced 9 frame.
      * @zh 九宫格精灵帧的上边界。
@@ -238,6 +250,54 @@ export class SpriteFrame extends Asset {
      * @zh uv 更新事件
      */
     public static EVENT_UV_UPDATED = 'uv_updated';
+
+    get marginTop () {
+        return this._margins[MARGIN_TOP];
+    }
+
+    set marginTop (value) {
+        if (this._margins[MARGIN_TOP] === value) {
+            return;
+        }
+
+        this._margins[MARGIN_TOP] = value;
+    }
+
+    get marginBottom () {
+        return this._margins[MARGIN_BOTTOM];
+    }
+
+    set marginBottom (value) {
+        if (this._margins[MARGIN_BOTTOM] === value) {
+            return;
+        }
+
+        this._margins[MARGIN_BOTTOM] = value;
+    }
+
+    get marginLeft () {
+        return this._margins[MARGIN_LEFT];
+    }
+
+    set marginLeft (value) {
+        if (this._margins[MARGIN_LEFT] === value) {
+            return;
+        }
+
+        this._margins[MARGIN_LEFT] = value;
+    }
+
+    get marginRight () {
+        return this._margins[MARGIN_BOTTOM];
+    }
+
+    set marginRight (value) {
+        if (this._margins[MARGIN_RIGHT] === value) {
+            return;
+        }
+
+        this._margins[MARGIN_RIGHT] = value;
+    }
 
     /**
      * @en Top border distance of sliced 9 rect.
@@ -519,6 +579,7 @@ export class SpriteFrame extends Asset {
     protected _rotated = false;
 
     protected _capInsets = [0, 0, 0, 0];
+    protected _margins = [0, 0, 0, 0];
 
     protected _atlasUuid = '';
     // @ts-expect-error not set value at there
@@ -699,6 +760,7 @@ export class SpriteFrame extends Asset {
             this._rect.set(0, 0, 0, 0);
             this._offset.set(0, 0);
             this._capInsets = [0, 0, 0, 0];
+            this._margins = [0, 0, 0, 0];
             this._rotated = false;
             calUV = true;
         }
@@ -722,6 +784,22 @@ export class SpriteFrame extends Asset {
 
             if (info.offset) {
                 this._offset.set(info.offset);
+            }
+
+            if (info.marginTop !== undefined) {
+                this._margins[MARGIN_TOP] = info.marginTop;
+            }
+
+            if (info.marginBottom !== undefined) {
+                this._margins[MARGIN_BOTTOM] = info.marginBottom;
+            }
+
+            if (info.marginLeft !== undefined) {
+                this._margins[MARGIN_LEFT] = info.marginLeft;
+            }
+
+            if (info.marginRight !== undefined) {
+                this._margins[MARGIN_RIGHT] = info.marginRight;
             }
 
             if (info.borderTop !== undefined) {
@@ -1187,6 +1265,7 @@ export class SpriteFrame extends Asset {
                 originalSize,
                 rotated: this._rotated,
                 capInsets: this._capInsets,
+                margins: this._margins,
                 vertices,
                 texture: (!ctxForExporting && texture) || undefined,
                 packable: this._packable,
@@ -1221,6 +1300,14 @@ export class SpriteFrame extends Asset {
         this._name = data.name;
         this._packable = !!data.packable;
 
+        const margins = data.margins;
+        if(margins) {
+            this._margins[MARGIN_LEFT] = margins[MARGIN_LEFT]; 
+            this._margins[MARGIN_TOP] = margins[MARGIN_TOP];
+            this._margins[MARGIN_RIGHT] = margins[MARGIN_RIGHT];
+            this._margins[MARGIN_BOTTOM] = margins[MARGIN_BOTTOM];
+        }
+        
         const capInsets = data.capInsets;
         if (capInsets) {
             this._capInsets[INSET_LEFT] = capInsets[INSET_LEFT];
@@ -1268,6 +1355,7 @@ export class SpriteFrame extends Asset {
         sp._originalSize.set(this._originalSize);
         sp._rotated = this._rotated;
         sp._capInsets.splice(0, sp._capInsets.length, ...this._capInsets);
+        sp._margins.splice(0, sp._margins.length, ...this._margins);
         sp._atlasUuid = this._atlasUuid;
         sp._texture = this._texture;
         sp._isFlipUVX = this._isFlipUVX;
