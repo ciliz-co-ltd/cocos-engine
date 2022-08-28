@@ -202,6 +202,10 @@ export const simple: IAssembler = {
                 case Sprite.FitType.FIT_HEIGHT:
                     scaleX = scaleY = sy;
                     break;
+
+                default:
+                    ((x: never) => { throw new Error(x); })(sprite.fitType);
+                    break;
             }
 
             return [ scaleX * size.width, scaleY * size.height];
