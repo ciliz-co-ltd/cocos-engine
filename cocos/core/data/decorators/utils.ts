@@ -152,7 +152,6 @@ export function getClassCache (ctor, decoratorName?) {
 }
 
 export function getSubDict<T, TKey extends keyof T> (obj: T, key: TKey): NonNullable<T[TKey]> {
-    // @ts-expect-error I don't know how to fix it.
     const a = obj as any;
     if (!a.hasOwnProperty(key)) {
         a[key] = {};

@@ -174,8 +174,39 @@ export const simple: IAssembler = {
 
         const uiTrans = sprite.node._uiProps.uiTransformComp!;
         const dataList: IRenderData[] = renderData.data;
-        const cw = uiTrans.width;
-        const ch = uiTrans.height;
+
+        const [cw, ch] = (() => {
+            const size = sprite.spriteFrame!.getOriginalSize();
+            const sx = uiTrans.width / size.width;
+            const sy = uiTrans.height / size.height;
+
+            let scaleX = 1, scaleY = 1;
+            switch (sprite.fitType) {
+                case Sprite.FitType.FILL:
+                    scaleX = sx;
+                    scaleY = sy;
+                    break;
+
+                case Sprite.FitType.FILL_ASPECT:
+                    scaleX = scaleY = Math.max(sx, sy);
+                    break;
+
+                case Sprite.FitType.FIT:
+                    scaleX = scaleY = Math.min(sx, sy);
+                    break;
+
+                case Sprite.FitType.FIT_WIDTH:
+                    scaleX = scaleY = sx;
+                    break;
+
+                case Sprite.FitType.FIT_HEIGHT:
+                    scaleX = scaleY = sy;
+                    break;
+            }
+
+            return [ scaleX * size.width, scaleY * size.height];
+        })();
+
         const appX = uiTrans.anchorX * cw;
         const appY = uiTrans.anchorY * ch;
         let l = 0;
@@ -207,7 +238,7 @@ export const simple: IAssembler = {
             r = cw + trimRight * scaleX - appX;
             t = ch + trimTop * scaleY - appY;
         }
-        
+
         l -= frame.marginLeft;
         b -= frame.marginBottom;
         r += frame.marginRight;
@@ -215,7 +246,7 @@ export const simple: IAssembler = {
 
         dataList[0].x = l;
         dataList[0].y = b;
-        
+
         dataList[1].x = r;
         dataList[1].y = t;
 

@@ -120,6 +120,15 @@ enum FillType {
 }
 ccenum(FillType);
 
+enum FitType {
+    FILL = 0,
+    FILL_ASPECT = 1,
+    FIT = 2,
+    FIT_WIDTH = 3,
+    FIT_HEIGHT = 4
+}
+ccenum(FitType);
+
 /**
  * @en
  * Sprite Size can track trimmed size, raw size or none.
@@ -437,7 +446,26 @@ export class Sprite extends Renderable2D {
         }
     }
 
+    @visible(function (this: Sprite) {
+        return this._sizeMode === SizeMode.CUSTOM;
+    })
+    @type(FitType)
+    @displayOrder(5)
+    get fitType () {
+        return this._fitType;
+    }
+    set fitType (value) {
+        if (this._fitType === value) {
+            return;
+        }
+
+        this._fitType = value;
+
+        this.markForUpdateRenderData(true);
+    }
+
     public static FillType = FillType;
+    public static FitType = FitType;
     public static Type = SpriteType;
     public static SizeMode = SizeMode;
     public static EventType = EventType;
@@ -448,6 +476,8 @@ export class Sprite extends Renderable2D {
     protected _type = SpriteType.SIMPLE;
     @serializable
     protected _fillType = FillType.HORIZONTAL;
+    @serializable
+    protected _fitType = FitType.FILL;
     @serializable
     protected _sizeMode = SizeMode.TRIMMED;
     @serializable
