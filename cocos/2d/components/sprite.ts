@@ -28,7 +28,7 @@ import { ccclass, help, executionOrder, menu, tooltip, displayOrder, type, range
 import { EDITOR } from 'internal:constants';
 import { SpriteAtlas } from '../assets/sprite-atlas';
 import { SpriteFrame } from '../assets/sprite-frame';
-import { Vec2 } from '../../core/math';
+import { Size, Vec2 } from '../../core/math';
 import { ccenum } from '../../core/value-types/enum';
 import { clamp } from '../../core/math/utils';
 import { IBatcher } from '../renderer/i-batcher';
@@ -462,6 +462,45 @@ export class Sprite extends Renderable2D {
         this._fitType = value;
 
         this.markForUpdateRenderData(true);
+    }
+
+    calcFitSize(originalSize: Size): Size {
+        if (this.type !== SpriteType.SIMPLE)
+            throw new Error('Sprite fitting supported only for SIMPLE type');
+
+        const uiTrans = this.node._uiProps.uiTransformComp!;
+        const sx = uiTrans.width / originalSize.width;
+        const sy = uiTrans.height / originalSize.height;
+
+        let scaleX = 1, scaleY = 1;
+        switch (this.fitType) {
+            case Sprite.FitType.FILL:
+                scaleX = sx;
+                scaleY = sy;
+                break;
+
+            case Sprite.FitType.FILL_ASPECT:
+                scaleX = scaleY = Math.max(sx, sy);
+                break;
+
+            case Sprite.FitType.FIT:
+                scaleX = scaleY = Math.min(sx, sy);
+                break;
+
+            case Sprite.FitType.FIT_WIDTH:
+                scaleX = scaleY = sx;
+                break;
+
+            case Sprite.FitType.FIT_HEIGHT:
+                scaleX = scaleY = sy;
+                break;
+
+            default:
+                ((x: never) => { throw new Error(x); })(this.fitType);
+                break;
+        }
+
+        return new Size(scaleX * originalSize.width, scaleY * originalSize.height);
     }
 
     public static FillType = FillType;
