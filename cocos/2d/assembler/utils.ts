@@ -85,11 +85,11 @@ export function updateOpacity (renderData: RenderData, opacity: number) {
             stride = renderData.floatStride;
             if (format.size / format.count === 1) {
                 throw new Error('RGBA8 is not supported by PMA renderer. If you want, fix this block');
-                const alpha = ~~clamp(Math.round(opacity * 255), 0, 255);
-                // Uint color RGBA8
-                for (let color = offset; color < vb.length; color += stride) {
-                    vb[color] = ((vb[color] & 0xffffff00) | alpha) >>> 0;
-                }
+                // const alpha = ~~clamp(Math.round(opacity * 255), 0, 255);
+                // // Uint color RGBA8
+                // for (let color = offset; color < vb.length; color += stride) {
+                //     vb[color] = ((vb[color] & 0xffffff00) | alpha) >>> 0;
+                // }
             } else if (format.size / format.count === 4) {
                 // RGBA32 color, alpha at position 3
                 for (let idx = offset; idx < vb.length; idx += stride) {

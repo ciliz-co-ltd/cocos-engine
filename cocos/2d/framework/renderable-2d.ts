@@ -219,7 +219,7 @@ export class Renderable2D extends RenderableComponent {
     @serializable
     protected _forcePremultiplyOnUpload = true;
 
-    protected _assembler: IAssembler | null = null;
+    public _assembler: IAssembler | null = null;
     protected _postAssembler: IAssembler | null = null;
     protected _renderData: RenderData | null = null;
     protected _renderDataFlag = true;

@@ -667,6 +667,7 @@ export class Batcher2D implements IBatcher {
         // Update cascaded opacity to vertex buffer
         if (this._opacityDirty && render && !render.useVertexOpacity && render.renderData && render.renderData.vertexCount > 0) {
             // HARD COUPLING
+            render._assembler?.updateColor(render);
             updateOpacity(render.renderData, opacity);
             const buffer = render.renderData.getMeshBuffer();
             if (buffer) {
