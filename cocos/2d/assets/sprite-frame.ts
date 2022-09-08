@@ -877,17 +877,21 @@ export class SpriteFrame extends Asset {
      */
     public _calculateSlicedUV () {
         const rect = this._rect;
-        // const texture = this._getCalculateTarget()!;
-        const tex = this.texture;
-        const atlasWidth = tex.width;
-        const atlasHeight = tex.height;
-        const xScale = atlasWidth / this._originalSize.width;
-        const yScale = atlasHeight / this._originalSize.height;
-        const leftWidth = this._capInsets[INSET_LEFT] * xScale;
-        const rightWidth = this._capInsets[INSET_RIGHT] * xScale;
+        const atlasWidth = rect.width;
+        const atlasHeight = rect.height;
+        const fullWidth = this._margins[MARGIN_LEFT]
+                        + this._originalSize.width
+                        + this._margins[MARGIN_RIGHT];
+        const fullHeight = this._margins[MARGIN_TOP]
+                         + this._originalSize.height
+                         + this._margins[MARGIN_BOTTOM];
+        const xScale = atlasWidth / fullWidth;
+        const yScale = atlasHeight / fullHeight;
+        const leftWidth = (this._margins[MARGIN_LEFT] + this._capInsets[INSET_LEFT]) * xScale;
+        const rightWidth = (this._margins[MARGIN_RIGHT] + this._capInsets[INSET_RIGHT]) * xScale;
         const centerWidth = rect.width - leftWidth - rightWidth;
-        const topHeight = this._capInsets[INSET_TOP] * yScale;
-        const bottomHeight = this._capInsets[INSET_BOTTOM] * yScale;
+        const topHeight = (this._margins[MARGIN_TOP] + this._capInsets[INSET_TOP]) * yScale;
+        const bottomHeight = (this._margins[MARGIN_BOTTOM] + this._capInsets[INSET_BOTTOM]) * yScale;
         const centerHeight = rect.height - topHeight - bottomHeight;
 
         const uvSliced = this.uvSliced;
@@ -1302,12 +1306,12 @@ export class SpriteFrame extends Asset {
 
         const margins = data.margins;
         if(margins) {
-            this._margins[MARGIN_LEFT] = margins[MARGIN_LEFT]; 
+            this._margins[MARGIN_LEFT] = margins[MARGIN_LEFT];
             this._margins[MARGIN_TOP] = margins[MARGIN_TOP];
             this._margins[MARGIN_RIGHT] = margins[MARGIN_RIGHT];
             this._margins[MARGIN_BOTTOM] = margins[MARGIN_BOTTOM];
         }
-        
+
         const capInsets = data.capInsets;
         if (capInsets) {
             this._capInsets[INSET_LEFT] = capInsets[INSET_LEFT];

@@ -85,28 +85,18 @@ export const sliced: IAssembler = {
         const appY = uiTrans.anchorY * height;
 
         const frame = sprite.spriteFrame!;
-        const leftWidth = frame.insetLeft;
-        const rightWidth = frame.insetRight;
-        const topHeight = frame.insetTop;
-        const bottomHeight = frame.insetBottom;
 
-        let sizableWidth = width - leftWidth - rightWidth;
-        let sizableHeight = height - topHeight - bottomHeight;
-        let xScale = width / (leftWidth + rightWidth);
-        let yScale = height / (topHeight + bottomHeight);
-        xScale = (Number.isNaN(xScale) || xScale > 1) ? 1 : xScale;
-        yScale = (Number.isNaN(yScale) || yScale > 1) ? 1 : yScale;
-        sizableWidth = sizableWidth < 0 ? 0 : sizableWidth;
-        sizableHeight = sizableHeight < 0 ? 0 : sizableHeight;
+        const sizableWidth = Math.max(0, width - frame.insetLeft - frame.insetRight);
+        const sizableHeight = Math.max(0, height - frame.insetTop - frame.insetBottom);
 
-        dataList[0].x = -appX;
-        dataList[0].y = -appY;
-        dataList[1].x = leftWidth * xScale - appX;
-        dataList[1].y = bottomHeight * yScale - appY;
+        dataList[0].x = -frame.marginLeft - appX;
+        dataList[0].y = -frame.marginBottom - appY;
+        dataList[1].x = -appX + frame.insetLeft;
+        dataList[1].y = -appY + frame.insetBottom;
         dataList[2].x = dataList[1].x + sizableWidth;
         dataList[2].y = dataList[1].y + sizableHeight;
-        dataList[3].x = width - appX;
-        dataList[3].y = height - appY;
+        dataList[3].x = width - appX + frame.marginRight;
+        dataList[3].y = height - appY + frame.marginTop;
     },
 
     fillBuffers (sprite: Sprite, renderer: IBatcher) {
