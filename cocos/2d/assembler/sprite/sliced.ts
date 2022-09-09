@@ -86,15 +86,12 @@ export const sliced: IAssembler = {
 
         const frame = sprite.spriteFrame!;
 
-        const sizableWidth = Math.max(0, width - frame.insetLeft - frame.insetRight);
-        const sizableHeight = Math.max(0, height - frame.insetTop - frame.insetBottom);
-
-        dataList[0].x = -frame.marginLeft - appX;
-        dataList[0].y = -frame.marginBottom - appY;
+        dataList[0].x = -appX - frame.marginLeft;
+        dataList[0].y = -appY - frame.marginBottom;
         dataList[1].x = -appX + frame.insetLeft;
         dataList[1].y = -appY + frame.insetBottom;
-        dataList[2].x = dataList[1].x + sizableWidth;
-        dataList[2].y = dataList[1].y + sizableHeight;
+        dataList[2].x = width - appX - frame.insetRight;
+        dataList[2].y = height - appY - frame.insetTop;
         dataList[3].x = width - appX + frame.marginRight;
         dataList[3].y = height - appY + frame.marginTop;
     },
