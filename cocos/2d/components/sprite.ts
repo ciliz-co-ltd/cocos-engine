@@ -447,7 +447,8 @@ export class Sprite extends Renderable2D {
     }
 
     @visible(function (this: Sprite) {
-        return this._sizeMode === SizeMode.CUSTOM;
+        return this._type === SpriteType.SIMPLE
+            && this._sizeMode === SizeMode.CUSTOM;
     })
     @type(FitType)
     @displayOrder(5)
