@@ -608,6 +608,18 @@ export class Layout extends Component {
         this._doLayoutDirty();
     }
 
+    @visible(function (this: Layout) {
+        return this._layoutType === Type.HORIZONTAL && this._resizeMode === ResizeMode.CONTAINER;
+    })
+    get minWidth () {
+        return this._minWidth;
+    }
+
+    set minWidth (value) {
+        this._minWidth = value;
+        this._doLayoutDirty();
+    }
+
     public static Type = Type;
     public static VerticalDirection = VerticalDirection;
     public static HorizontalDirection = HorizontalDirection;
@@ -647,6 +659,8 @@ export class Layout extends Component {
     protected _affectedByScale = false;
     @serializable
     protected _isAlign = false;
+    @serializable
+    protected _minWidth = 0;
 
     protected _layoutSize = new Size(300, 200);
     protected _layoutDirty = true;
