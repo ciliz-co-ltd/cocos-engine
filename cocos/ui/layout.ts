@@ -1101,7 +1101,7 @@ export class Layout extends Component {
         }
 
         if (this._layoutType === Type.HORIZONTAL) {
-            const newWidth = this._getHorizontalBaseWidth();
+            let newWidth = this._getHorizontalBaseWidth();
 
             const fnPositionY = (child: Node) => {
                 const pos = this._isAlign ? Vec3.ZERO : child.position;
@@ -1109,6 +1109,11 @@ export class Layout extends Component {
             };
 
             this._doLayoutHorizontally(newWidth, false, fnPositionY, true);
+
+            if (this._resizeMode === ResizeMode.CONTAINER && this._minWidth) {
+                newWidth = Math.max(this._minWidth, newWidth);
+            }
+
             this.node._uiProps.uiTransformComp!.width = newWidth;
         } else if (this._layoutType === Type.VERTICAL) {
             const newHeight = this._getVerticalBaseHeight();
