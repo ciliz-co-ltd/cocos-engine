@@ -608,6 +608,18 @@ export class Layout extends Component {
         this._doLayoutDirty();
     }
 
+    @visible(function (this: Layout) {
+        return this._layoutType === Type.HORIZONTAL && this._resizeMode === ResizeMode.CONTAINER;
+    })
+    get minWidth () {
+        return this._minWidth;
+    }
+
+    set minWidth (value) {
+        this._minWidth = value;
+        this._doLayoutDirty();
+    }
+
     public static Type = Type;
     public static VerticalDirection = VerticalDirection;
     public static HorizontalDirection = HorizontalDirection;
@@ -647,6 +659,8 @@ export class Layout extends Component {
     protected _affectedByScale = false;
     @serializable
     protected _isAlign = false;
+    @serializable
+    protected _minWidth = 0;
 
     protected _layoutSize = new Size(300, 200);
     protected _layoutDirty = true;
@@ -1087,7 +1101,7 @@ export class Layout extends Component {
         }
 
         if (this._layoutType === Type.HORIZONTAL) {
-            const newWidth = this._getHorizontalBaseWidth();
+            let newWidth = this._getHorizontalBaseWidth();
 
             const fnPositionY = (child: Node) => {
                 const pos = this._isAlign ? Vec3.ZERO : child.position;
@@ -1095,6 +1109,11 @@ export class Layout extends Component {
             };
 
             this._doLayoutHorizontally(newWidth, false, fnPositionY, true);
+
+            if (this._resizeMode === ResizeMode.CONTAINER && this._minWidth) {
+                newWidth = Math.max(this._minWidth, newWidth);
+            }
+
             this.node._uiProps.uiTransformComp!.width = newWidth;
         } else if (this._layoutType === Type.VERTICAL) {
             const newHeight = this._getVerticalBaseHeight();
